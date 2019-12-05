@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=0.65">
+  <title>Basketball</title>
+
+</head>
+<body>
+<div style="text-align:left">
+<canvas "="" id="myCanvas" width="1024" height="768" style="border:1px solid #000000;">
+</canvas>
+
+</div>
+
+
+<script>
+
+var canvas = document.getElementById('myCanvas');
+      var ctx = canvas.getContext('2d');
+
+
+
+var ox = new Array();
+var oy = new Array();
+var i=0;
+
+var px = new Array();
+var py = new Array();
+var pi=0;
+
+var selection = "nothing";
+
+var tx = 0;
+var ty = 0;
+
+var touching = 0;
+
+var lb = new Array();
+var hey = 0;
+
+
+
+// Prevent scrolling when touching the canvas
+setInterval(function() {
+
+if(selection!="zoom") {
+
+
+document.body.addEventListener("touchstart", function (e) {
+  if (e.target == canvas) {
+    e.preventDefault();
+  }
+}, false);
+document.body.addEventListener("touchend", function (e) {
+  if (e.target == canvas) {
+    e.preventDefault();
+  }
+}, false);
+document.body.addEventListener("touchmove", function (e) {
+  if (e.target == canvas) {
+    e.preventDefault();
+  }
+}, false);
+
+} else {
+
+
+//function(touchstart) {return true;}
+//function(touchend) {return true;}
+//function(touchmove) {return true;}
+
+
+}
+}, 1000);
+
+
+
+
+
+
+
+// Set up touch events for mobile, etc
+canvas.addEventListener("touchstart", function (e) {
+        mousePos = getTouchPos(canvas, e);
+  var touch = e.touches[0];
+
+
+
+  var mouseEvent = new MouseEvent("mousedown", {
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
+                                                      //REAL SCRIPT BOI
+
+
+touching=1;
+
+if(touch.clientY<100) {
+
+if(touch.clientX<=210) {
+selection="pla";
+} else if(touch.clientX<=420) {
+selection="opp";
+} else if(touch.clientX<=610) {
+selection="line";
+} else if(touch.clientX<=762) {
+selection="erasing";
+erase();
+} else if(touch.clientX<=894) {
+selection="zoom";
+} else {
+//back to menu...
+}
+
+
+} else {
+
+if(selection=="opp") {
+
+ox[i] = touch.clientX;
+oy[i] = touch.clientY;
+i++;
+
+} else if(selection=="pla") {
+
+px[pi] = touch.clientX;
+py[pi] = touch.clientY;
+pi++;
+
+} else if(selection=="line") {
+tx=touch.clientX;
+ty=touch.clientY;
+
+lb[hey] = 1;
+
+}
+}
+
+
+                                                     //STOP SCRIPT BOI
+
+  canvas.dispatchEvent(mouseEvent);
+}, false);
+canvas.addEventListener("touchend", function (e) {
+  var mouseEvent = new MouseEvent("mouseup", {});
+
+                                                   //SCRIPT MOUSEND
+
+touching=0;
+lb[hey] = 0;
+
+
+                                                    //SCRIPT MOUSEND END
+
+  canvas.dispatchEvent(mouseEvent);
+}, false);
+canvas.addEventListener("touchmove", function (e) {
+  var touch = e.touches[0];
+  var mouseEvent = new MouseEvent("mousemove", {
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
+                                                          //SCRIPT MOVE
+
+if(selection=="line") {
+tx=touch.clientX;
+ty=touch.clientY;
+}
+
+                                                      //SCRIPT MOVE END
+  canvas.dispatchEvent(mouseEvent);
+}, false);
+
+// Get the position of a touch relative to the canvas
+function getTouchPos(canvasDom, touchEvent) {
+  var rect = canvasDom.getBoundingClientRect();
+  return {
+    x: touchEvent.touches[0].clientX - rect.left,
+    y: touchEvent.touches[0].clientY - rect.top
+  };
+}
+
+
+
+//IMAGES
+
+var court = new Image();
+court.src = "https://us.123rf.com/450wm/kittichais/kittichais1702/kittichais170200078/72363368-piso-de-cancha-de-baloncesto-con-l%C3%ADnea-en-madera.jpg?ver=6";
+
+var opponent = new Image();
+opponent.src = "https://www.freeiconspng.com/uploads/x-png-23.png";
+
+var team = new Image();
+team.src = "https://webstockreview.net/images/circle-clipart-greenery-8.png";
+
+var pencil = new Image();
+pencil.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Black_pencil.svg/600px-Black_pencil.svg.png";
+
+var eraser = new Image();
+eraser.src = "https://png.pngtree.com/svg/20150903/eraser_1320087.png";
+
+
+
+function erase() {
+
+
+lb.length = 0;
+px.length = 0;
+py.length = 0;
+ox.length = 0;
+oy.length = 0;
+dotx.length = 0;
+doty.length = 0;
+
+
+i = 0;
+pi = 0;
+hey = 0;
+dn = 0;
+tx = 0;
+ty = 0;
+
+
+console.log(py[2]);
+
+
+}
+
+
+
+
+
+
+
+
+
+var on = 5;
+
+
+var dotx = new Array();
+var doty = new Array();
+
+
+var dn = 0;
+
+function line() {
+requestAnimationFrame(line);
+if(selection=="line" && touching==1) {
+
+dotx[dn] = tx;
+doty[dn] = ty;
+dn++;
+hey++;
+}
+}
+
+function draw() {
+requestAnimationFrame(draw);
+/*
+
+ctx.fillStyle="red";
+for(n=0; n<on; n++) {
+ctx.fillRect(ox[n]-25, oy[n]-25, 30, 30);
+}
+
+ctx.fillStyle="green";
+for(n=0; n<on; n++) {
+//ctx.fillRect(px[n]-25, py[n]-25, 30, 30);
+ctx.beginPath();
+ctx.arc(px[n]-25/2,py[n]-25/2,15,0,Math.PI*180/2);
+ctx.fill();
+}
+*/
+/*
+if(selection=="zoom") {
+ctx.scale(2,2);
+}
+*/
+
+ctx.drawImage(court, 0,100,1024,668);
+
+ctx.strokeStyle="#000000";
+ctx.lineWidth= 6;
+
+
+for(u=0; u<dn; u++) {
+
+ctx.beginPath();
+ctx.arc(dotx[u],doty[u],3,0,Math.PI*180/2);
+ctx.fill();
+
+
+
+
+if(lb[u] != 1) {
+ctx.beginPath();
+ctx.moveTo(dotx[u-1], doty[u-1]);
+ctx.lineTo(dotx[u], doty[u]);
+ctx.closePath();
+ctx.stroke();
+}
+
+
+
+
+//console.log(dotx[u-1] +"/"+ doty[u-1] +":"+ dotx[u] +"/"+ doty[u]);
+}
+
+
+for(n=0; n<on; n++) {
+ctx.drawImage(opponent, ox[n]-25,oy[n]-25, 30,30);
+ctx.drawImage(team, px[n]-25,py[n]-25, 30,30);
+
+}
+
+
+/*
+if(selection=="zoom") {
+ctx.scale(0.5,0.5);
+}
+*/
+//**********UI**********
+
+
+ctx.fillStyle="rgb(175,175,175)";
+ctx.fillRect(0,0,1024,100);
+
+
+ctx.fillStyle="lightgrey";
+if(selection=="pla") {
+ctx.fillRect(0,0,210,100);
+} else if(selection=="opp") {
+ctx.fillRect(210,0,210,100);
+} else if(selection=="line") {
+ctx.fillRect(420,0,210,100);
+} else if(selection=="erasing") {
+ctx.fillRect(630,0,132,100);
+} else if(selection=="zoom") {
+ctx.fillRect(762,0,132,100);
+} 
+
+ctx.drawImage(team, 105-45, 50-45, 90, 90);
+ctx.drawImage(opponent, 315-45, 55-45, 90, 90);
+ctx.drawImage(pencil, 525-45, 50-45, 90, 90);
+ctx.drawImage(eraser, 696-45, 50-45, 90, 90);
+
+
+ctx.fillStyle="black";
+ctx.fillRect(210,0,1,100);
+ctx.fillRect(420,0,1,100);
+ctx.fillRect(630,0,1,100);
+
+//1024-630=394/3 = 132
+ctx.fillRect(762,0,1,100);
+ctx.fillRect(894,0,1,100);
+
+
+}
+
+
+
+
+
+line();
+draw();
+</script>
+</body>
+</html>
